@@ -1,4 +1,4 @@
-NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 66, stage = "All", latency.period = 2, malignancy.probability = 0.075){   ###Initialize function###
+NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 66, stage = "All", latency.period = 2, malignancy.probability = 0.0803){   ###Initialize function###
   if(start.age < 66) {
     return("Please input a start age between 66 and 80")                   ###Return errors if the user inputs unrecognized
   }
@@ -23,7 +23,7 @@ NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 6
   #sex <- "Men"
   #comorbidity <- "Moderate"
   #stage <- "All"
-  #malignancy.probability <- 0.075
+  #malignancy.probability <- 0.0803
   #latency.period <- 2
   
   setwd(directory)
@@ -38,7 +38,6 @@ NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 6
   ### Define Key Parameters ###
   
   
-  nofollowbenefit.range <- c(6:13)
   
   
   ### Initialize Output Vectors for each health state ###
@@ -86,16 +85,14 @@ NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 6
     
     ### Define Probabilities ###
     
-    if(i <  6) {
-      pDie <- 1 - exp(-1*(comorbidityadjusteddeath.rate + (cancermortality.rate - rccmortality.rate)))          #Define pDie for each cycle, patients are spared rccmortality.rate for the duration of the follow-up period
-    }
-    if(i %in% nofollowbenefit.range) {                                                                    #Protection ceases from follow-up but cancer must be added back in to account for deficiencies in life tables
+    if(i <=  14) {
+                                                                
       pDie <- 1 - exp(-1*(comorbidityadjusteddeath.rate + cancermortality.rate))
     }
-    if(i > (13)) {
+    else {
       pDie <- 1 - exp(-1*(comorbidityadjusteddeath.rate))
     }
-    
+     
     pDieRCC <- 1 - exp(-1*(rccdeath.rate))                                               ##Calculate annual probability of dying while in the RCC arm
  
     ### Run Markov ###
@@ -143,7 +140,7 @@ NoTreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 6
     startcyclediseasefree.proportion <- finishcyclediseasefree.proportion
     startcycleincidentalfinding.proportion <- finishcycleincidentalfinding.proportion
     
-    if(isTRUE(all.equal(finishcyclealive.proportion, 0, tolerance = 0.000001))) {                                             #finish loop when there are no surviving patients
+    if(isTRUE(all.equal(finishcyclealive.proportion, 0, tolerance = 0.00000001))) {                                             #finish loop when there are no surviving patients
       break 
     }
   }

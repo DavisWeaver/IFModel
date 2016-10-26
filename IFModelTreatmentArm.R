@@ -23,6 +23,7 @@ TreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 66)
   #directory <- datasources.directory
   #sex <- "Women"
   #comorbidity <- "Severe"
+  
   setwd(directory)
   file.name <- paste(sex, comorbidity, "ComorbidityLifeTable.csv", sep = "")             #Define Filename
   life.table <- read.csv(file.name, header = TRUE)                                                     #Load data tables
@@ -37,12 +38,12 @@ TreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 66)
   
     for(i in start.age:120) {
       if(sex == "Men") {
-        rccmortality.rate <- rccmortality.table[i, 3]                                                   
-        cancermortality.rate <- cancermortality.table[i, 2]
+        rccmortality.rate <- rccmortality.table[(i+1), 3]                                                   
+        cancermortality.rate <- cancermortality.table[(i+1), 2]
       }
       else {
-        rccmortality.rate <- rccmortality.table[i, 2]
-        cancermortality.rate <- cancermortality.table[i, 3]
+        rccmortality.rate <- rccmortality.table[(i+1), 2]
+        cancermortality.rate <- cancermortality.table[(i+1), 3]
       }
       comorbidityadjusteddeath.rate <- life.table[(i - 59), start.age - 64]
       
@@ -65,7 +66,7 @@ TreatmentLifeExpectancy <- function(directory, sex, comorbidity, start.age = 66)
       cycle.outputs <- c(cycle.outputs, cycle.reward)                                    #Add this proportion to the Cycle_Outputs vector, multiply by 1 to compute the contribution of that cycle to the overall life expectancy calculation. 
       startcyclealive.proportion <- finishcyclealive.proportion                          #Reset Start_Alive to carry over proportion alive from previous cycle.
       
-        if(isTRUE(all.equal(finishcyclealive.proportion, 0, tolerance = 0.000001))) {                                             #finish loop when there are no surviving patients
+        if(isTRUE(all.equal(finishcyclealive.proportion, 0, tolerance = 0.00000001))) {                                             #finish loop when there are no surviving patients
           break 
       }
     }
